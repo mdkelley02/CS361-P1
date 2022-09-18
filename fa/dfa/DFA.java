@@ -24,11 +24,11 @@ public class DFA implements DFAInterface {
             this.addState(name);
         }
         return this.states.get(name);
-
     }
 
     public void addFinalState(String name) {
         this.addState(name);
+
         DFAState state = this.getState(name);
         state.isFinal = true;
         this.finalStates.add(state);
