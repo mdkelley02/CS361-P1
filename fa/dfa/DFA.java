@@ -11,8 +11,8 @@ public class DFA implements DFAInterface {
     private String startStatekey;
 
     public void addStartState(String name) {
-        this.startStatekey = name;
         this.addState(name);
+        this.startStatekey = name;
     }
 
     public void addState(String name) {
