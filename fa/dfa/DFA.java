@@ -59,6 +59,7 @@ public class DFA implements DFAInterface {
     public boolean accepts(String s) {
         DFAState currentState = this.states.get(this.startStatekey);
         String[] inputs = s.split("");
+
         for (int i = 0; i < s.length(); i++) {
             if (currentState.transitions.containsKey(inputs[i])) {
                 currentState = currentState.transitions.get(inputs[i]);
