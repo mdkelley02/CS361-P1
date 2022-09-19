@@ -64,7 +64,7 @@ class DFATestCases {
                         new DFATestString(true, "000"),
                         new DFATestString(true, "0000"),
                         new DFATestString(true, "111110"),
-                // new DFATestString(false, "2")
+                        new DFATestString(false, "2")
                 });
     }
 
@@ -92,10 +92,10 @@ class DFATestCases {
                 new String[] { "A0B", "B0A", "C0C" },
                 new DFATestString[] {
                         new DFATestString(true, "0"),
-                        new DFATestString(true, "00"),
+                        new DFATestString(false, "00"),
                         new DFATestString(true, "000"),
-                        new DFATestString(true, "0000"),
-                        new DFATestString(true, "111110"),
+                        new DFATestString(false, "0000"),
+                        new DFATestString(true, "0000000"),
                         new DFATestString(false, "2")
                 });
     }
@@ -116,7 +116,7 @@ class DFATestCases {
                 });
     }
 
-    public static DFATestCase TestCyclicState() {
+    public static DFATestCase TestStartStateIsFinalState() {
         return new DFATestCase(
                 "A",
                 new String[] { "A" },
@@ -126,6 +126,7 @@ class DFATestCases {
                         new DFATestString(true, "0"),
                         new DFATestString(true, "00"),
                         new DFATestString(true, ""),
+                        new DFATestString(false, "2"),
                 });
     }
 
@@ -135,12 +136,12 @@ public class DFATester {
     public HashMap<String, DFATestCase> testCases = new HashMap<String, DFATestCase>();
 
     public DFATester() {
-        // this.testCases.put("TestEmptyAlphabet", DFATestCases.TestEmptyAlphabet());
-        // this.testCases.put("TestThreeAlphabet", DFATestCases.TestThreeAlphabet());
-        // this.testCases.put("TestTwoAlphabet", DFATestCases.TestTwoAlphabet());
-        // this.testCases.put("TestOneAlphabet", DFATestCases.TestOneAlphabet());
-        // this.testCases.put("TestSingleState", DFATestCases.TestSingleState());
-        this.testCases.put("TestCyclicState", DFATestCases.TestCyclicState());
+        this.testCases.put("TestEmptyAlphabet", DFATestCases.TestEmptyAlphabet());
+        this.testCases.put("TestThreeAlphabet", DFATestCases.TestThreeAlphabet());
+        this.testCases.put("TestTwoAlphabet", DFATestCases.TestTwoAlphabet());
+        this.testCases.put("TestOneAlphabet", DFATestCases.TestOneAlphabet());
+        this.testCases.put("TestSingleState", DFATestCases.TestSingleState());
+        this.testCases.put("TestStartStateIsFinalState", DFATestCases.TestStartStateIsFinalState());
     }
 
     private DFATestCase parseTestFile(File testFile) {

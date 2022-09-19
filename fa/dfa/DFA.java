@@ -11,12 +11,18 @@ public class DFA implements DFAInterface {
     private String startStatekey;
 
     public void addStartState(String name) {
-        this.addState(name);
+        if (!states.containsKey(name)) {
+            this.addState(name);
+        }
         this.startStatekey = name;
     }
 
     public void addState(String name) {
         this.states.put(name, new DFAState(name));
+    }
+
+    public void addState(DFAState state) {
+        this.states.put(state.getName(), state);
     }
 
     private DFAState getState(String name) {
@@ -36,7 +42,6 @@ public class DFA implements DFAInterface {
         DFAState from = this.getState(fromState);
         from.addTransition(onSymb, this.getState(toState));
         this.alphabet.add(onSymb);
-        this.states.put(fromState, from);
     }
 
     public Set<DFAState> getStates() {
@@ -68,11 +73,51 @@ public class DFA implements DFAInterface {
                 return false;
             }
         }
-        return currentState.isFinal;
+        return this.finalStates.contains(currentState);
     }
 
     public DFAState getToState(DFAState from, char onSymb) {
         return from.transitions.get(String.valueOf(onSymb));
+    }
+
+    private <T> String formatDeltaLine(T[] from) {
+        String line = "";
+        for (T s : from) {
+            line += String.format("%5s", s);
+        }
+        return line.trim();
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        StringBuilder deltaSb = new StringBuilder();
+
+        sb.append(String.format("Q = %s\n", this.states.keySet().toString()));
+
+        sb.append(String.format("Sigma = %s\n", this.alphabet.toString()));
+
+        deltaSb.append(String.format("\t%5s", "") + this.formatDeltaLine(this.alphabet.toArray()));
+        deltaSb.append("\n");
+        for (DFAState state : this.states.values()) {
+            deltaSb.append(String.format("\t%s", state.getName()));
+            for (Character c : this.alphabet) {
+                DFAState toState = this.getToState(state, c);
+                if (toState != null) {
+                    deltaSb.append(String.format("%5s", toState.getName()));
+                } else {
+                    deltaSb.append(String.format("%5s", "-"));
+                }
+            }
+            deltaSb.append("\n");
+        }
+
+        sb.append(String.format("delta =\n%s", deltaSb.toString()));
+
+        sb.append(String.format("q0 = %s\n", this.startStatekey));
+
+        sb.append(String.format("F = %s\n", this.finalStates.toString()));
+
+        return sb.toString().replace("[", "{").replace("]", "}");
     }
 
 }

@@ -1,7 +1,7 @@
 A
 A
 B
-A0A "A1A
+A0A A1A
 
 0
 1
