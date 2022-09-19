@@ -13,7 +13,7 @@ java fa.dfa.DFADriver path_to_test
 <h3>Test</h3>
 <code>
 <pre>
-java fa.dfa.DFADriverTester 
+javac fa/*.java fa/dfa/*.java && java fa.dfa.DFATester
 </pre>
 </code>
 <h3>Clean</h3>

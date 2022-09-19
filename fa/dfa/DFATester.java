@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.function.Consumer;
 
 class DFATestString {
     boolean isAccepted;
@@ -80,7 +79,7 @@ class DFATestCases {
                         new DFATestString(false, "00"),
                         new DFATestString(true, "000"),
                         new DFATestString(false, "0000"),
-                // new DFATestString(false, "111110"),
+                        new DFATestString(false, "111110"),
                 // new DFATestString(false, "2")
                 });
     }
@@ -108,12 +107,25 @@ class DFATestCases {
                 new String[] {},
                 new String[] { "A0A", "A1A" },
                 new DFATestString[] {
-                        new DFATestString(true, "0"),
+                        new DFATestString(true, ""),
                         new DFATestString(true, "00"),
                         new DFATestString(true, "000"),
                         new DFATestString(true, "0000"),
                         new DFATestString(true, "111110"),
                         new DFATestString(false, "2")
+                });
+    }
+
+    public static DFATestCase TestCyclicState() {
+        return new DFATestCase(
+                "A",
+                new String[] { "A" },
+                new String[] { "B" },
+                new String[] { "A0A", "A1B", "B0B", "B1A" },
+                new DFATestString[] {
+                        new DFATestString(true, "0"),
+                        new DFATestString(true, "00"),
+                        new DFATestString(true, ""),
                 });
     }
 
@@ -123,9 +135,12 @@ public class DFATester {
     public HashMap<String, DFATestCase> testCases = new HashMap<String, DFATestCase>();
 
     public DFATester() {
-        this.testCases.put("TestEmptyAlphabet", DFATestCases.TestEmptyAlphabet());
-        this.testCases.put("TestThreeAlphabet", DFATestCases.TestThreeAlphabet());
-        this.testCases.put("TestTwoAlphabet", DFATestCases.TestTwoAlphabet());
+        // this.testCases.put("TestEmptyAlphabet", DFATestCases.TestEmptyAlphabet());
+        // this.testCases.put("TestThreeAlphabet", DFATestCases.TestThreeAlphabet());
+        // this.testCases.put("TestTwoAlphabet", DFATestCases.TestTwoAlphabet());
+        // this.testCases.put("TestOneAlphabet", DFATestCases.TestOneAlphabet());
+        // this.testCases.put("TestSingleState", DFATestCases.TestSingleState());
+        this.testCases.put("TestCyclicState", DFATestCases.TestCyclicState());
     }
 
     private DFATestCase parseTestFile(File testFile) {
@@ -167,6 +182,7 @@ public class DFATester {
         String RED = "\u001B[31m";
         String GREEN = "\u001B[32m";
         String RESET = "\033[0m";
+        String BOLD = "\033[0;1m";
 
         if (readFromFiles) {
             File testsDir = new File(
@@ -175,7 +191,6 @@ public class DFATester {
             for (File testFile : testFiles) {
                 if (testFile.isFile()) {
                     String fileName = testFile.getName();
-                    System.out.println("Running test: " + fileName);
                     this.testCases.put(fileName, this.parseTestFile(testFile));
                 }
             }
@@ -185,6 +200,7 @@ public class DFATester {
             int totalTests = 0;
             int totalPassed = 0;
             DFA dfa = new DFA();
+
             DFATestCase testCase = pair.getValue();
             for (String finalState : testCase.finalStates) {
                 dfa.addFinalState(finalState);
@@ -196,21 +212,31 @@ public class DFATester {
                         transition.charAt(1),
                         transition.substring(2, 3));
             }
-            System.out.println(pair.getKey());
+            System.out.println(BOLD + pair.getKey() + RESET);
 
             for (DFATestString testString : testCase.testStrings) {
                 totalTests++;
-                boolean actual = dfa.accepts(testString.string);
-                boolean failed = actual != testString.isAccepted;
+                boolean actual = false;
+                boolean failed = false;
+                Exception error = null;
+                try {
+                    actual = dfa.accepts(testString.string);
+                    failed = actual != testString.isAccepted;
+                } catch (Exception e) {
+                    error = e;
+                    failed = true;
+                }
+
                 if (!failed) {
                     totalPassed++;
                 }
                 System.out.println(
                         String.format(
-                                "String: %10s, Result: %10s, %5s",
+                                "String: %10s, Result: %10s, %5s %s",
                                 testString.string,
                                 this.formatResult(actual),
-                                String.format("%s%s%s", failed ? RED : GREEN, failed ? "FAIL" : "PASS", RESET)));
+                                String.format("%s%s%s%s", BOLD, failed ? RED : GREEN, failed ? "FAIL" : "PASS", RESET),
+                                error != null ? error.getMessage() : ""));
             }
             System.out.println(
                     String.format(
@@ -226,6 +252,6 @@ public class DFATester {
 
     public static void main(String[] args) {
         DFATester tester = new DFATester();
-        tester.run(true);
+        tester.run(false);
     }
 }

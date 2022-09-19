@@ -27,16 +27,16 @@ public class DFA implements DFAInterface {
     }
 
     public void addFinalState(String name) {
-        this.addState(name);
-
         DFAState state = this.getState(name);
         state.isFinal = true;
         this.finalStates.add(state);
     }
 
     public void addTransition(String fromState, char onSymb, String toState) {
+        DFAState from = this.getState(fromState);
+        from.addTransition(onSymb, this.getState(toState));
         this.alphabet.add(onSymb);
-        this.getState(fromState).addTransition(onSymb, this.states.get(toState));
+        this.states.put(fromState, from);
     }
 
     public Set<DFAState> getStates() {
@@ -57,6 +57,7 @@ public class DFA implements DFAInterface {
     }
 
     public boolean accepts(String s) {
+
         DFAState currentState = this.states.get(this.startStatekey);
         String[] inputs = s.split("");
 
