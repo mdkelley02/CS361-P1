@@ -5,7 +5,7 @@ run:
 	make build && java fa.dfa.DFADriver $(FILE) && make clean
 
 test:
-	make build && java fa.dfa.DFATester && make clean
+	make build && java fa.dfa.DFATester $(FILES) && make clean
 
 clean:
 	rm -rf fa/*.class && rm -rf fa/dfa/*.class 

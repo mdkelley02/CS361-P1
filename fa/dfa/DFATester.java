@@ -133,6 +133,10 @@ class DFATestCases {
 }
 
 public class DFATester {
+    private static String RED = "\u001B[31m";
+    private static String GREEN = "\u001B[32m";
+    private static String RESET = "\033[0m";
+    private static String BOLD = "\033[0;1m";
     public HashMap<String, DFATestCase> testCases = new HashMap<String, DFATestCase>();
 
     public DFATester() {
@@ -180,10 +184,6 @@ public class DFATester {
     }
 
     public void run(boolean readFromFiles) {
-        String RED = "\u001B[31m";
-        String GREEN = "\u001B[32m";
-        String RESET = "\033[0m";
-        String BOLD = "\033[0;1m";
 
         if (readFromFiles) {
             File testsDir = new File(
@@ -232,12 +232,7 @@ public class DFATester {
                     totalPassed++;
                 }
                 System.out.println(
-                        String.format(
-                                "String: %10s, Result: %10s, %5s %s",
-                                testString.string,
-                                this.formatResult(actual),
-                                String.format("%s%s%s%s", BOLD, failed ? RED : GREEN, failed ? "FAIL" : "PASS", RESET),
-                                error != null ? error.getMessage() : ""));
+                        this.formatTestResult(testString.string, actual, failed, error));
             }
             System.out.println(
                     String.format(
@@ -247,12 +242,27 @@ public class DFATester {
         }
     }
 
-    private String formatResult(boolean result) {
+    private String formatTestResult(String testString, boolean actual, boolean failed, Exception error) {
+        return String.format(
+                "String: %10s, Result: %10s, %5s %s",
+                testString,
+                this.formatDfaResult(actual),
+                String.format("%s%s%s%s", BOLD, failed ? RED : GREEN, failed ? "FAIL" : "PASS", RESET),
+                error != null ? error.getMessage() : "");
+    }
+
+    private String formatDfaResult(boolean result) {
         return result ? "ACCEPTED" : "REJECTED";
     }
 
     public static void main(String[] args) {
         DFATester tester = new DFATester();
-        tester.run(false);
+        boolean readFromFiles = false;
+        try {
+            readFromFiles = Boolean.parseBoolean(args[0]);
+        } catch (Exception e) {
+            System.out.println("Error parsing args: " + e.getMessage());
+        }
+        tester.run(readFromFiles);
     }
 }
