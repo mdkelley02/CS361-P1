@@ -129,14 +129,16 @@ class DFATestCases {
                         new DFATestString(false, "2"),
                 });
     }
+}
 
+class AnsiColors {
+    public static final String RESET = "\u001B[0m";
+    public static final String RED = "\u001B[31m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String BOLD = "\u001B[1m";
 }
 
 public class DFATester {
-    private static String RED = "\u001B[31m";
-    private static String GREEN = "\u001B[32m";
-    private static String RESET = "\033[0m";
-    private static String BOLD = "\033[0;1m";
     public HashMap<String, DFATestCase> testCases = new HashMap<String, DFATestCase>();
 
     public DFATester() {
@@ -163,8 +165,8 @@ public class DFATester {
             return null;
         }
 
-        String startState = scan.nextLine();
         String[] finalStates = scan.nextLine().split(" ");
+        String startState = scan.nextLine();
         String[] remainingStates = scan.nextLine().split(" ");
         String[] transitions = scan.nextLine().split(" ");
 
@@ -213,7 +215,7 @@ public class DFATester {
                         transition.charAt(1),
                         transition.substring(2, 3));
             }
-            System.out.println(BOLD + pair.getKey() + RESET);
+            System.out.println(AnsiColors.BOLD + pair.getKey() + AnsiColors.RESET);
 
             for (DFATestString testString : testCase.testStrings) {
                 totalTests++;
@@ -246,12 +248,13 @@ public class DFATester {
         return String.format(
                 "String: %10s, Result: %10s, %5s %s",
                 testString,
-                this.formatDfaResult(actual),
-                String.format("%s%s%s%s", BOLD, failed ? RED : GREEN, failed ? "FAIL" : "PASS", RESET),
+                this.formatTestResult(actual),
+                String.format("%s%s%s%s", AnsiColors.BOLD, failed ? AnsiColors.RED : AnsiColors.GREEN,
+                        failed ? "FAIL" : "PASS", AnsiColors.RESET),
                 error != null ? error.getMessage() : "");
     }
 
-    private String formatDfaResult(boolean result) {
+    private String formatTestResult(boolean result) {
         return result ? "ACCEPTED" : "REJECTED";
     }
 

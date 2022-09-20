@@ -7,8 +7,8 @@
 
 OVERVIEW:
 
-    DFA is an implementation of a deterministic finite automa. The class accepts an initial state, a set of final states,
-    and a set of transitions.
+    DFA is an implementation of a deterministic finite automa. The class accepts a set of final states. an initial state, 
+    and a set of transitions. Once they are set, the class can be used to determine if a string is a member of the DFA's language.
 
 INCLUDED FILES:
 
@@ -33,8 +33,8 @@ COMPILING AND RUNNING:
     run:
         make build && java fa.dfa.DFADriver $(FILE) && make clean
 
-    Compile and run test program
-    $ make test
+    Compile and run test program. Optionally include test all files in tests/ directory
+    $ make test [FILES=true]
     test:
         make build && java fa.dfa.DFATester && make clean
 
@@ -46,17 +46,27 @@ COMPILING AND RUNNING:
 
 
 PROGRAM DESIGN AND IMPORTANT CONCEPTS:
-    The program implements a DFA. DFA's are inherently a graph, as such the program uses a directed graph data structure to represent the DFA.
-    Each DFAState object represents a node in the graph. The DFAState object contains a map of transitions that represent the edges of the graph.
-    The DFAState object also contains a boolean value that represents whether or not the state is a final state.
+    The program implements a DFA. DFA's are inherently a graph, as such the program uses a directed graph 
+    data structure to represent the DFA.
 
-    To determine if the DFA accepts a given string the program starts at the intitial state and traverses it's edges based on the current character of the input string.
-    once it reaches the end of the string, if the current state is defined as a final state then the string is accepted, otherwise it is rejected.
+    DFA.java contains a map of every DFAState in the DFA. Each DFAState contains a map of transitions
+    to other DFAStates. The DFAState class also contains a boolean value that represents if the state is
+    a final state. 
+
+    The DFADriver program will set the DFA configuration by reading in a configuration file. The DFA
+    configuration file is a text file that contains the DFA's final states, initial state, transitions,
+    as well as a list of test strings.
+
+    To determine if the DFA accepts a given string the program starts at the intitial state and traverses 
+    it's edges based on the current character of the input string. once it reaches the end of the string, 
+    if the current state is defined as a final state then the string is accepted, otherwise it is rejected.
 
 TESTING:
-    To test the DFA, we wrote a test suite program which can optionally read in all configuration files in a given directory and test them all.
-    In addition to testing from configuration files we also wrote a configuration file model class that can be used to mock a configuration file.
-    The test suite program tests the dfa class by mocking how the driver class provided to us would inject the configuration into the dfa class.
+    To DFA.java we wrote a test suite program. This program includes an in memory model for a DFA configuration.  
+    which can optionally read in all configuration files in a given directory and test them all. In addition 
+    to testing from configuration files we also wrote a configuration file model class that can be used to 
+    mock a configuration file. The test suite program tests the DFA class by mocking how the provided driver 
+    class would inject the configuration into the DFA class.
 
     The DFA configuration cases we tested for are:
     * alphabet of length 0, 1, 2, and 3
